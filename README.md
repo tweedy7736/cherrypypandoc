@@ -1,2 +1,2 @@
-# cherrypypandoc
+# CherryPyPandoc
 CherryPy wrapper for pypandoc
