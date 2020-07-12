@@ -82,7 +82,7 @@ class PandocService(object):
 	              	<input type="checkbox" name="citeproc" value="citeproc" checked onchange="togglePaths(this.checked)" />
 	              	<label for="citeproc"><code>citeproc</code></label><br />
 	              	<label for="bib_path"><code>bib_path</code>:</label>
-	              	<input type="text" size="80" id="bib_path" name="bib_path" value="https://raw.githubusercontent.com/tweedy7736/zotero/master/Library.bib" /> 
+	              	<input type="text" size="80" id="bib_path" name="bib_path" value="https://raw.githubusercontent.com/tweedyflanigan/zotero/master/Library.bib" /> 
 	              	<strong>or</strong> 
 	              	<input type="file" id="bib_file" name="bib_file" onchange="toggleBibOnly(this.checked)" /><br />
 	              	<label for="csl_path"><code>csl_path</code>:</label>
