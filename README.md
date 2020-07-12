@@ -5,7 +5,8 @@
 ## Getting started
 
 The script requires Python and the [CherryPy](https://cherrypy.org) framework, as well as:
-* [Pandoc](http://pandoc.org), [pandoc-citeproc](https://github.com/jgm/pandoc-citeproc), [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref), and a [LaTeX](https://www.tug.org/begin.html) installation with XeLaTex
+* [Pandoc](http://pandoc.org)
+* [pandoc-citeproc](https://github.com/jgm/pandoc-citeproc), [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref), and a [LaTeX](https://www.tug.org/begin.html) installation with XeLaTex if you want to use these options
 * [pypandoc](https://github.com/bebraw/pypandoc) and [validators](https://github.com/kvesteri/validators) for python
 
 ## Configuring and running
