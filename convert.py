@@ -111,15 +111,12 @@ class PandocService(object):
 	Do the conversion and return the converted file
 	"""
 	@cherrypy.expose
-#	def convert(self, in_file, bib_file, output, standalone=None, xelatex=None, crossref=None, citeproc=None, bib_path=None, csl_path=None):
 	def convert(self, *args, **kwargs):
 		# Let's assign our variables
 
 		# Initialize data containers
 		data = None
 		bib_data = None
-		
-		# Validate URLs
 
 		# file_in:
 		try:
@@ -177,7 +174,7 @@ class PandocService(object):
 		tmp_in.seek(0)
 		
 		# Handle the .bib path as file, or URL or path, but only if using pandoc-citeproc
-		# (We only need to do this for the .bib because pandoc handles .csl URLs fine)
+		# (We only need to do this for the .bib because pandoc handles .csl URLs fine by itself)
 		if citeproc:
 			if bib_data is not None:
 				tmp_bib = NamedTemporaryFile(suffix='.bib',mode="w+b")
@@ -192,7 +189,7 @@ class PandocService(object):
 					tmp_bib.seek(0)
 					bib_path = tmp_bib.name
 
-		# Add in options
+		# Add in options as arguments
 		pdoc_args = []
 		if standalone:
 			pdoc_args.append('--standalone')
