@@ -24,7 +24,7 @@ Main class:
 """
 class PandocService(object):
 	"""
-	Here's the input form
+	Here's the HTML input form
 	"""
 	@cherrypy.expose
 	def index(self):
@@ -108,7 +108,7 @@ class PandocService(object):
 	        </html>"""
 	
 	"""
-	Generate the pdf
+	Do the conversion and return the converted file
 	"""
 	@cherrypy.expose
 #	def convert(self, in_file, bib_file, output, standalone=None, xelatex=None, crossref=None, citeproc=None, bib_path=None, csl_path=None):
