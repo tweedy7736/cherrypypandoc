@@ -23,7 +23,8 @@ You can then access the converter via http. Instructions for using the converter
 
 ## Issues
 
-The script converts from markdown well, but I've had some issues testing conversion from other formats.
+* The script converts from markdown well, but I've had some issues testing conversion from other formats.
+* Not tested in Python 2.x (or earlier)
 
 ## Screenshot
 
