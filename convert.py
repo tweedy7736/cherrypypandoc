@@ -103,7 +103,7 @@ class PandocService(object):
 	            </code>
 	            <h5>Notes:</h5> 
 	            <ul><li>Omit unwanted options rather than passing them to cURL as <code>False</code></li>
-	            <li>Make sure the extension of <code>localOutputFile.html</code> matches the value given to <code>output</output></li></ul>
+	            <li>Make sure the extension of <code>Output.html</code> matches the value given to <code>output</output></li></ul>
 	          </body>
 	        </html>"""
 	
