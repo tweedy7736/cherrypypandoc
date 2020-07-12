@@ -111,7 +111,7 @@ class PandocService(object):
 	Do the conversion and return the converted file
 	"""
 	@cherrypy.expose
-	def convert(self, *args, **kwargs):
+	def convert(self, **kwargs):
 		# Let's assign our variables
 
 		# Initialize data containers
