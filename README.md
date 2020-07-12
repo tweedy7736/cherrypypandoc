@@ -21,10 +21,12 @@ python convert.py
 
 You can then access the converter via http. Instructions for using the converter are included there.
 
+## Issues
+
+* The script converts from markdown well, but I've had some issues testing conversion from other formats.
+* Not tested in Python 2.x (or earlier)
+
 ## Screenshot
 
 ![cherrypypandoc in action](https://raw.githubusercontent.com/tweedyflanigan/cherrypypandoc/master/Screenshot.png)
 
-## Issues
-
-The script converts from markdown well, but I've had some issues testing conversion from other formats.
