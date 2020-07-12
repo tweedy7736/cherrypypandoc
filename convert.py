@@ -106,7 +106,7 @@ class PandocService(object):
 	            <li>Make sure the extension of <code>Output.html</code> matches the value given to <code>output</output></li></ul>
 	          </body>
 	        </html>"""
-	
+
 	"""
 	Do the conversion and return the converted file
 	"""
@@ -209,11 +209,11 @@ class PandocService(object):
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-#		try:
-		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-		assert out == ""
-#		except:
-			#return "Error running pandoc"
+		try:
+			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+			assert out == ""
+		except:
+			return "Error running pandoc"
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
