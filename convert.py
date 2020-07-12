@@ -93,7 +93,7 @@ class PandocService(object):
 	              	<button type="submit" style="margin-top:2em;">Convert!</button>
 	              </div>
 	            </form>
-	            <h5>Notes:</h5>
+	            <h5>Notes</h5>
 	            <ul><li><code>bib_path</code> and <code>csl_path</code> can be given as paths on the server or as URLs</li></ul>
 	            <h3>Command Line</h3>
 	            <code>curl -F 'in_file=@</code><em><small>input file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://192.168.1.13/convert -o </code><em><small>output file</small></em>
@@ -101,7 +101,7 @@ class PandocService(object):
 	            <code>
 	            	curl -F 'in_file=@/path/to/file.md' -F 'output=html' -F 'standalone=True' -F 'crossref=True' -F 'citeproc=True' -F 'bib_path=http://url.to/file.bib' -F 'csl_path='http://url.to/file.csl' http://192.168.1.13:8080/convert -o Output.html
 	            </code>
-	            <h5>Notes:</h5> 
+	            <h5>Notes</h5> 
 	            <ul><li>Omit unwanted options rather than passing them to cURL as <code>False</code></li>
 	            <li>Make sure the extension of <code>Output.html</code> matches the value given to <code>output</output></li></ul>
 	          </body>
@@ -137,42 +137,42 @@ class PandocService(object):
 		except:
 			to_format = 'html' # Set html as output type if not passed
 
-		# remaining variables (set to None if not passed):		
+		# remaining variables (set to None if not passed):
 		try:
 			standalone = kwargs['standalone']
 		except:
 			standalone = None
-		
+
 		try:
 			xelatex = kwargs['xelatex']
 		except:
 			xelatex = None
-		
+
 		try:
 			crossref = kwargs['crossref']
 		except:
 			crossref = None
-		
+
 		try:
 			citeproc = kwargs['citeproc']
 		except:
 			citeproc = None
-		
+
 		try:
 			bib_path = kwargs['bib_path']
 		except:
 			bib_path = None
-		
+
 		try:
 			csl_path = kwargs['csl_path']
 		except:
 			csl_path = None
-		
+
 		# Copy the uploaded file to /tmp
 		tmp_in = NamedTemporaryFile(suffix='.md',mode="w+b")
 		tmp_in.write(data)
 		tmp_in.seek(0)
-		
+
 		# Handle the .bib path as file, or URL or path, but only if using pandoc-citeproc
 		# (We only need to do this for the .bib because pandoc handles .csl URLs fine by itself)
 		if citeproc:
@@ -209,11 +209,11 @@ class PandocService(object):
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-		try:
-			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-			assert out == ""
-		except:
-			return "Error running pandoc"
+#		try:
+		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+		assert out == ""
+#		except:
+			#return "Error running pandoc"
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
