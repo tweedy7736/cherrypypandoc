@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 import urllib.request
 import validators
+import socket
 
 """
 Configure the CherryPy server
@@ -28,11 +29,15 @@ class PandocService(object):
 	"""
 	@cherrypy.expose
 	def index(self):
+		#hostname = socket.gethostbyname(socket.gethostname())
+		address = cherrypy.server.socket_host
+		if cherrypy.server.socket_port:
+			address += ":" + str(cherrypy.server.socket_port)
 		return """<html>
   	        <head>
   	        	<title>Document Converter</title>
   	        	<style>
-  	        		body {margin:5% 10%;}
+  	        		body {margin:5%% 10%%;}
   	        		label {padding-right:1em;}
   	        		h3 {border-bottom: 1px solid lightgrey; padding-top:1em;}
   	        	</style>
@@ -49,6 +54,7 @@ class PandocService(object):
   	        </head>
   	        <body>
 		    <h1>Document Converter</h1>
+		    	<p><small>Running at <a href="http://%(address)s">%(address)s</a></small></p>
 		    	<h3>Web Form</h3>
 	            <form method="post" action="convert" enctype="multipart/form-data">
 	              <div id="file">
@@ -96,16 +102,16 @@ class PandocService(object):
 	            <h5>Notes</h5>
 	            <ul><li><code>bib_path</code> and <code>csl_path</code> can be given as paths on the server or as URLs</li></ul>
 	            <h3>Command Line</h3>
-	            <code>curl -F 'in_file=@</code><em><small>input file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://192.168.1.13/convert -o </code><em><small>output file</small></em>
+	            <code>curl -F 'in_file=@</code><em><small>input file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://</code><em><small>server_address</small></em><code>/convert -o </code><em><small>output file</small></em>
 	            <h5>Example</h5>
 	            <code>
-	            	curl -F 'in_file=@/path/to/file.md' -F 'output=html' -F 'standalone=True' -F 'crossref=True' -F 'citeproc=True' -F 'bib_path=http://url.to/file.bib' -F 'csl_path='http://url.to/file.csl' http://192.168.1.13:8080/convert -o Output.html
+	            	curl -F 'in_file=@/path/to/file.md' -F 'output=html' -F 'standalone=True' -F 'crossref=True' -F 'citeproc=True' -F 'bib_path=http://url.to/file.bib' -F 'csl_path='http://url.to/file.csl' http://%(address)s/convert -o Output.html
 	            </code>
 	            <h5>Notes</h5> 
 	            <ul><li>Omit unwanted options rather than passing them to cURL as <code>False</code></li>
 	            <li>Make sure the extension of <code>Output.html</code> matches the value given to <code>output</output></li></ul>
 	          </body>
-	        </html>"""
+	        </html>""" % {"address": address}
 
 	"""
 	Do the conversion and return the converted file
