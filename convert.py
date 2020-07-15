@@ -15,7 +15,7 @@ Configure the CherryPy server
 """
 config = {
     'global' : {
-        'server.socket_host' : '192.168.1.13',
+        'server.socket_host' : '192.168.1.100',
         'server.socket_port' : 8080
     }
 }
@@ -102,7 +102,7 @@ class PandocService(object):
 	            <h5>Notes</h5>
 	            <ul><li><code>bib_path</code> and <code>csl_path</code> can be given as paths on the server or as URLs</li></ul>
 	            <h3>Command Line</h3>
-	            <code>curl -F 'in_file=@</code><em><small>input file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://</code><em><small>server_address</small></em><code>/convert -o </code><em><small>output file</small></em>
+	            <code>curl -F 'in_file=@</code><em><small>input_file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://</code><em><small>server_address</small></em><code>/convert -o </code><em><small>output_file</small></em>
 	            <h5>Example</h5>
 	            <code>
 	            	curl -F 'in_file=@/path/to/file.md' -F 'output=html' -F 'standalone=True' -F 'crossref=True' -F 'citeproc=True' -F 'bib_path=http://url.to/file.bib' -F 'csl_path='http://url.to/file.csl' http://%(address)s/convert -o Output.html
@@ -118,7 +118,25 @@ class PandocService(object):
 	"""
 	@cherrypy.expose
 	def convert(self, **kwargs):
-		# Let's assign our variables
+		def wrap(header=None, message=None): # For returning nice HTML error messages
+			return """<html>
+  	    	    <head>
+  	    	    	<title>Document Converter</title>
+  	    	    	<style>
+  	    	    		body {margin:5%% 10%%;}
+  	    	    		h3 {border-bottom: 1px solid lightgrey; padding-top:1em;}
+  	    	    	</style>
+  	    	    </head>
+  	    	    <body>
+			    <h1>Document Converter</h1>
+			    <h3>%(header)s</h3>
+			    <p>%(message)s</p>
+			    <p><a href="/">Return to form</a></p>
+			    </body>
+		    </html> """ % {"header": header, "message": message}
+		
+		
+		# Now let's assign our variables
 
 		# Initialize data containers
 		data = None
@@ -129,7 +147,7 @@ class PandocService(object):
 			data = kwargs['in_file'].file.read() # Read in the uploaded file
 			short_name = Path(kwargs['in_file'].filename).stem # Get the file's name (stem) to use again later
 		except:
-			return "No input file received"
+			return wrap("Error", "No input file received")
 
 		# bib_file:
 		try:
@@ -219,7 +237,7 @@ class PandocService(object):
 			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
 			assert out == ""
 		except:
-			return "Error running pandoc"
+			return wrap("Error", "Error running pandoc")
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
