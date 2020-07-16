@@ -100,16 +100,17 @@ class PandocService(object):
 	              </div>
 	            </form>
 	            <h5>Notes</h5>
-	            <ul><li><code>bib_path</code> and <code>csl_path</code> can be given as paths on the server or as URLs</li></ul>
+	            <ul><li><code>bib_path</code> and <code>csl_path</code> can be passed as paths on the server or as URLs</li></ul>
 	            <h3>Command Line</h3>
-	            <code>curl -F 'in_file=@</code><em><small>input_file</small></em><code>' -F '</code><em><small>args</small></em><code>' http://</code><em><small>server_address</small></em><code>/convert -o </code><em><small>output_file</small></em>
+	            <code>curl -F 'in_file=@</code><em><small>input_file</small></em><code>' [-F '</code><em><small>args</small></em><code>'] http://</code><em><small>server_address</small></em><code>/convert -o </code><em><small>output_file</small></em>
 	            <h5>Example</h5>
 	            <code>
 	            	curl -F 'in_file=@/path/to/file.md' -F 'output=html' -F 'standalone=True' -F 'crossref=True' -F 'citeproc=True' -F 'bib_path=http://url.to/file.bib' -F 'csl_path='http://url.to/file.csl' http://%(address)s/convert -o Output.html
 	            </code>
 	            <h5>Notes</h5> 
 	            <ul><li>Omit unwanted options rather than passing them to cURL as <code>False</code></li>
-	            <li>Make sure the extension of <code>Output.html</code> matches the value given to <code>output</output></li></ul>
+	            <li>If no <code>output</code> format is requested, the converter will default to HTML output
+	            <li>Make sure the extension of <em><small>output_file</small></em> matches the value given to <code>output</output></li></ul>
 	          </body>
 	        </html>""" % {"address": address}
 
