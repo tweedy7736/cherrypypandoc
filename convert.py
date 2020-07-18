@@ -15,7 +15,7 @@ Configure the CherryPy server
 """
 config = {
     'global' : {
-        'server.socket_host' : '192.168.1.100',
+        'server.socket_host' : '192.168.1.15',
         'server.socket_port' : 8080
     }
 }
@@ -93,7 +93,11 @@ class PandocService(object):
 	              	<input type="file" id="bib_file" name="bib_file" onchange="toggleBibOnly(this.checked)" /><br />
 	              	<label for="csl_path"><code>csl_path</code>:</label>
 	              	<input type="text" size="80" id="csl_path" name="csl_path" value="https://github.com/citation-style-language/styles/raw/master/chicago-author-date-16th-edition.csl" /> 
-	              	[<a href="https://github.com/citation-style-language/styles" target="_blank">?</a>]
+	              	[<a href="https://github.com/citation-style-language/styles" target="_blank">?</a>] <br />
+	              	<label for="template"><code>template</code>:</label>
+	              	<input type="text" size="80" name="template" value="" />
+	              	<strong>or</strong> 
+	              	<input type="file" name="template_file" /><br />
 	              </div>
 	              <div id="submit">
 	              	<button type="submit" style="margin-top:2em;">Convert!</button>
@@ -142,6 +146,7 @@ class PandocService(object):
 		# Initialize data containers
 		data = None
 		bib_data = None
+		template_data = None
 
 		# file_in:
 		try:
@@ -155,6 +160,12 @@ class PandocService(object):
 			bib_data = kwargs['bib_file'].file.read() # Read in the bibliography file (if it exists)
 		except:
 			bib_file = None
+
+		# template_file:
+		try:
+			template_data = kwargs['template_file'].file.read() # Read in the template file (if it exists)
+		except:
+			template_file = None
 
 		# output format:
 		try:
@@ -193,6 +204,11 @@ class PandocService(object):
 		except:
 			csl_path = None
 
+		try:
+			template = kwargs['template']
+		except:
+			template = None
+
 		# Copy the uploaded file to /tmp
 		tmp_in = NamedTemporaryFile(suffix='.md',mode="w+b")
 		tmp_in.write(data)
@@ -214,12 +230,28 @@ class PandocService(object):
 					tmp_bib.seek(0)
 					bib_path = tmp_bib.name
 
+		# Same for template file/URL (if either exists)
+		if template_data is not None:
+			tmp_template = NamedTemporaryFile(suffix='.tex',mode="w+b")
+			tmp_template.write(template_data)
+			tmp_template.seek(0)
+			template = tmp_template.name
+		if template is not None:
+			if validators.url(template):
+				# Download and use the .tex temlpate file
+				# (Technically pandoc can accept URLs for templates, but it doesn't handle e.g. dropbox URLs with "?="-style arguments appended)
+				tmp_template = NamedTemporaryFile(suffix='.tex',mode='w+b')
+				tmp_template.write(urllib.request.urlopen(template).read())
+				tmp_template.seek(0)
+				template = tmp_template.name
+
 		# Add in options as arguments
 		pdoc_args = []
 		if standalone:
 			pdoc_args.append('--standalone')
-		if xelatex:
-			pdoc_args.append('--pdf-engine=xelatex')
+		if to_format == 'pdf': # Only do this if implied by output, regardless of whether it's passed
+			if xelatex:
+				pdoc_args.append('--pdf-engine=xelatex')
 
 		# Add in filters and their associated arguments
 		pdoc_filters = []
@@ -229,16 +261,19 @@ class PandocService(object):
 			pdoc_filters.append('pandoc-citeproc')
 			if bib_path is not None:
 				pdoc_args.append('--bibliography="'+bib_path+'"')
-			if csl_path:
+			if csl_path is not None:
 				pdoc_args.append('--csl="'+csl_path+'"')
+		if to_format == 'pdf' or to_format == 'tex': # Only do this if implied by output, regardless of whether it's passed
+			if template is not None:
+				pdoc_args.append('--template='+template)
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-		try:
-			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-			assert out == ""
-		except:
-			return wrap("Error", "Error running pandoc")
+		#try:
+		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+		assert out == ""
+		#except:
+		#	return wrap("Error", "Error running pandoc")
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
