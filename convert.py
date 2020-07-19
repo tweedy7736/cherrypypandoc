@@ -139,8 +139,7 @@ class PandocService(object):
 			    <p><a href="/">Return to form</a></p>
 			    </body>
 		    </html> """ % {"header": header, "message": message}
-		
-		
+
 		# Now let's assign our variables
 
 		# Initialize data containers
@@ -165,7 +164,7 @@ class PandocService(object):
 		try:
 			template_data = kwargs['template_file'].file.read() # Read in the template file (if it exists)
 		except:
-			template_file = None
+			template_data = None
 
 		# output format:
 		try:
@@ -206,6 +205,8 @@ class PandocService(object):
 
 		try:
 			template = kwargs['template']
+			if template == '':
+				template = None
 		except:
 			template = None
 
@@ -237,9 +238,7 @@ class PandocService(object):
 			tmp_template.seek(0)
 			template = tmp_template.name
 		if template is not None:
-			if validators.url(template):
 				# Download and use the .tex temlpate file
-				# (Technically pandoc can accept URLs for templates, but it doesn't handle e.g. dropbox URLs with "?="-style arguments appended)
 				tmp_template = NamedTemporaryFile(suffix='.tex',mode='w+b')
 				tmp_template.write(urllib.request.urlopen(template).read())
 				tmp_template.seek(0)
@@ -269,11 +268,11 @@ class PandocService(object):
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-		#try:
-		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-		assert out == ""
-		#except:
-		#	return wrap("Error", "Error running pandoc")
+		try:
+			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+			assert out == ""
+		except:
+			return wrap("Error", "Error running pandoc")
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
