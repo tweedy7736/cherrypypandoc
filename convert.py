@@ -223,7 +223,7 @@ class PandocService(object):
 				tmp_bib.write(bib_data)
 				tmp_bib.seek(0)
 				bib_path = tmp_bib.name
-			if bib_path is not None:
+			elif bib_path is not None:
 				if validators.url(bib_path):
 					# Download and use the .bib file
 					tmp_bib = NamedTemporaryFile(suffix='.bib',mode='w+b')
@@ -237,7 +237,8 @@ class PandocService(object):
 			tmp_template.write(template_data)
 			tmp_template.seek(0)
 			template = tmp_template.name
-		if template is not None:
+		elif template is not None:
+			if validators.url(template):
 				# Download and use the .tex temlpate file
 				tmp_template = NamedTemporaryFile(suffix='.tex',mode='w+b')
 				tmp_template.write(urllib.request.urlopen(template).read())
