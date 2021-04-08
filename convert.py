@@ -227,11 +227,11 @@ class PandocService(object):
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-#		try:
-		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-#			assert out == ""
-#		except:
-#			return "Error running pandoc"
+		try:
+			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+			assert out == ""
+		except:
+			return "Error running pandoc"
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
@@ -239,8 +239,8 @@ Run the CherryPy server
 """
 if __name__ == '__main__':
 	# Do this as a daemon instead of in console
-#	from cherrypy.process.plugins import Daemonizer
-#	d = Daemonizer(cherrypy.engine)
-#	d.subscribe()
+	from cherrypy.process.plugins import Daemonizer
+	d = Daemonizer(cherrypy.engine)
+	d.subscribe()
 
 	cherrypy.quickstart(PandocService(), '/', config)
