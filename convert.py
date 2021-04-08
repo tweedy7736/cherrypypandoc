@@ -80,7 +80,9 @@ class PandocService(object):
 	              	<input type="checkbox" name="crossref" value="crossref" checked />
 	              	<label for="crossref"><code>crossref</code></label>
 	              	<input type="checkbox" name="citeproc" value="citeproc" checked onchange="togglePaths(this.checked)" />
-	              	<label for="citeproc"><code>citeproc</code></label><br />
+	              	<label for="citeproc"><code>citeproc</code></label>
+	              	<input type="checkbox" name="bibtex" value="bibtex" checked onchange="togglePaths(this.checked)" />
+	              	<label for="bibtex"><code>bibtex</code></label><br />
 	              	<label for="bib_path"><code>bib_path</code>:</label>
 	              	<input type="text" size="80" id="bib_path" name="bib_path" value="https://raw.githubusercontent.com/tweedyflanigan/zotero/master/Library.bib" /> 
 	              	<strong>or</strong> 
@@ -157,6 +159,11 @@ class PandocService(object):
 			citeproc = kwargs['citeproc']
 		except:
 			citeproc = None
+			
+		try:
+			bibtex = kwargs['bibtex']
+		except:
+			bibtex = None
 		
 		try:
 			bib_path = kwargs['bib_path']
@@ -193,6 +200,8 @@ class PandocService(object):
 		pdoc_args = []
 		if standalone:
 			pdoc_args.append('--standalone')
+		if bibtex:
+			pdoc_args.append('--bibtex')
 		if xelatex:
 			pdoc_args.append('--pdf-engine=xelatex')
 
@@ -202,10 +211,10 @@ class PandocService(object):
 			pdoc_filters.append('pandoc-crossref')
 		if citeproc:
 			pdoc_filters.append('pandoc-citeproc')
-			if bib_path is not None:
-				pdoc_args.append('--bibliography="'+bib_path+'"')
-			if csl_path:
-				pdoc_args.append('--csl="'+csl_path+'"')
+		if bib_path is not None:
+			pdoc_args.append('--bibliography="'+bib_path+'"')
+		if csl_path:
+			pdoc_args.append('--csl="'+csl_path+'"')
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
