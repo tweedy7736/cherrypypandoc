@@ -14,7 +14,7 @@ Configure the CherryPy server
 """
 config = {
     'global' : {
-        'server.socket_host' : '192.168.1.13',
+        'server.socket_host' : '10.0.1.5',
         'server.socket_port' : 8080
     }
 }
