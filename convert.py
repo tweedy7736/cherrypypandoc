@@ -81,6 +81,8 @@ class PandocService(object):
 	              	<label for="crossref"><code>crossref</code></label>
 	              	<input type="checkbox" name="citeproc" value="citeproc" onchange="togglePaths(this.checked)" />
 	              	<label for="citeproc"><code>citeproc</code></label>
+	              	<input type="checkbox" name="natbib" value="natbib" onchange="togglePaths(this.checked)" />
+	              	<label for="natbib"><code>natbib</code></label>
 	              	<input type="checkbox" name="biblatex" value="biblatex" onchange="togglePaths(this.checked)" />
 	              	<label for="biblatex"><code>biblatex</code></label><br />
 	              	<label for="bib_path"><code>bib_path</code>:</label>
@@ -161,6 +163,11 @@ class PandocService(object):
 			citeproc = None
 			
 		try:
+			biblatex = kwargs['natbib']
+		except:
+			natbib = None
+
+		try:
 			biblatex = kwargs['biblatex']
 		except:
 			biblatex = None
@@ -202,6 +209,8 @@ class PandocService(object):
 			pdoc_args.append('--standalone')
 		if biblatex:
 			pdoc_args.append('--biblatex')
+		if natbib:
+			pdoc_args.append('--natbib')
 		if xelatex:
 			pdoc_args.append('--pdf-engine=xelatex')
 
