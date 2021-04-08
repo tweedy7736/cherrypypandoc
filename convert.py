@@ -79,10 +79,10 @@ class PandocService(object):
 	              	<h4>Filters</h4>
 	              	<input type="checkbox" name="crossref" value="crossref" checked />
 	              	<label for="crossref"><code>crossref</code></label>
-	              	<input type="checkbox" name="citeproc" value="citeproc" checked onchange="togglePaths(this.checked)" />
+	              	<input type="checkbox" name="citeproc" value="citeproc" onchange="togglePaths(this.checked)" />
 	              	<label for="citeproc"><code>citeproc</code></label>
-	              	<input type="checkbox" name="bibtex" value="bibtex" checked onchange="togglePaths(this.checked)" />
-	              	<label for="bibtex"><code>bibtex</code></label><br />
+	              	<input type="checkbox" name="biblatex" value="biblatex" onchange="togglePaths(this.checked)" />
+	              	<label for="biblatex"><code>biblatex</code></label><br />
 	              	<label for="bib_path"><code>bib_path</code>:</label>
 	              	<input type="text" size="80" id="bib_path" name="bib_path" value="https://raw.githubusercontent.com/tweedyflanigan/zotero/master/Library.bib" /> 
 	              	<strong>or</strong> 
@@ -161,9 +161,9 @@ class PandocService(object):
 			citeproc = None
 			
 		try:
-			bibtex = kwargs['bibtex']
+			biblatex = kwargs['biblatex']
 		except:
-			bibtex = None
+			biblatex = None
 		
 		try:
 			bib_path = kwargs['bib_path']
@@ -200,8 +200,8 @@ class PandocService(object):
 		pdoc_args = []
 		if standalone:
 			pdoc_args.append('--standalone')
-		if bibtex:
-			pdoc_args.append('--bibtex')
+		if biblatex:
+			pdoc_args.append('--biblatex')
 		if xelatex:
 			pdoc_args.append('--pdf-engine=xelatex')
 
@@ -218,11 +218,11 @@ class PandocService(object):
 
 		# generate the file using pandoc
 		tmp_out = NamedTemporaryFile(suffix='.'+to_format)
-		try:
-			out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
-			assert out == ""
-		except:
-			return "Error running pandoc"
+#		try:
+		out = pypandoc.convert_file(tmp_in.name, to_format, outputfile=tmp_out.name, extra_args=pdoc_args)
+#			assert out == ""
+#		except:
+#			return "Error running pandoc"
 		return static.serve_file(tmp_out.name, content_type='application/x-download', disposition='attachment', name=short_name+'.'+to_format)
 
 """
@@ -230,8 +230,8 @@ Run the CherryPy server
 """
 if __name__ == '__main__':
 	# Do this as a daemon instead of in console
-	from cherrypy.process.plugins import Daemonizer
-	d = Daemonizer(cherrypy.engine)
-	d.subscribe()
+#	from cherrypy.process.plugins import Daemonizer
+#	d = Daemonizer(cherrypy.engine)
+#	d.subscribe()
 
 	cherrypy.quickstart(PandocService(), '/', config)
