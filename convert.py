@@ -163,7 +163,7 @@ class PandocService(object):
 			citeproc = None
 			
 		try:
-			biblatex = kwargs['natbib']
+			natbib = kwargs['natbib']
 		except:
 			natbib = None
 
